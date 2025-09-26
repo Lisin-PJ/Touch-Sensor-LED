@@ -1,0 +1,32 @@
+import RPi.GPIO as GPIO
+import time
+
+# Pin setup
+TOUCH_PIN = 17   # GPIO pin connected to touch sensor
+LED_PIN = 27     # GPIO pin connected to LED
+
+# GPIO setup
+GPIO.setmode(GPIO.BCM)  # Use BCM numbering
+GPIO.setup(TOUCH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Active low sensor
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+print("Touch sensor test started. Press CTRL+C to exit.")
+
+try:
+    while True:
+        sensor_state = GPIO.input(TOUCH_PIN)
+
+        if sensor_state == 0:  # Active LOW (touched)
+            print("Touched!")
+            GPIO.output(LED_PIN, GPIO.HIGH)  # Turn ON LED
+            time.sleep(0.5)
+            GPIO.output(LED_PIN, GPIO.LOW)   # Turn OFF LED
+            time.sleep(0.5)
+        else:
+            print("Not touched")
+            GPIO.output(LED_PIN, GPIO.LOW)   # Keep LED OFF
+            time.sleep(0.2)
+
+except KeyboardInterrupt:
+    print("Exiting...")
+    GPIO.cleanup()
